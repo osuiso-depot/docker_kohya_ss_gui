@@ -13,7 +13,7 @@ PIP_PACKAGES=(
   )
 
 CHECKPOINT_MODELS=(
-    "https://civitai.com/api/download/models/992719"
+    "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/anyillustriousXLFor_v11.safetensors"
 )
 
 
