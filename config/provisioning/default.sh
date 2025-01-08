@@ -7,15 +7,13 @@
 ### Edit the following arrays to suit your workflow - values must be quoted and separated by newlines or spaces.
 
 DISK_GB_REQUIRED=30
-  
+
 PIP_PACKAGES=(
     #"package==version"
   )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned.ckpt"
-    #"https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
-    #"https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+    "https://civitai.com/api/download/models/992719"
 )
 
 
@@ -24,7 +22,7 @@ CHECKPOINT_MODELS=(
 function provisioning_start() {
     source /opt/ai-dock/etc/environment.sh
     source /opt/ai-dock/bin/venv-set.sh kohya
-    
+
     DISK_GB_AVAILABLE=$(($(df --output=avail -m "${WORKSPACE}" | tail -n1) / 1000))
     DISK_GB_USED=$(($(df --output=used -m "${WORKSPACE}" | tail -n1) / 1000))
     DISK_GB_ALLOCATED=$(($DISK_GB_AVAILABLE + $DISK_GB_USED))
@@ -32,9 +30,9 @@ function provisioning_start() {
     provisioning_get_mamba_packages
     provisioning_get_pip_packages
     provisioning_get_models \
-        "${WORKSPACE}/storage/stable_diffusion/models/ckpt" \
+        "${WORKSPACE}/kohya_ss/models" \
         "${CHECKPOINT_MODELS[@]}"
-     
+
     provisioning_print_end
 }
 
@@ -55,7 +53,7 @@ function provisioning_get_models() {
         printf "WARNING: Low disk space allocation - Only the first model will be downloaded!\n"
         arr=("$1")
     fi
-    
+
     printf "Downloading %s model(s) to %s...\n" "${#arr[@]}" "$dir"
     for url in "${arr[@]}"; do
         printf "Downloading: %s\n" "${url}"
@@ -77,17 +75,27 @@ function provisioning_print_end() {
 
 # Download from $1 URL to $2 file path
 function provisioning_download() {
-    if [[ -n $HF_TOKEN && $1 =~ ^https://([a-zA-Z0-9_-]+\.)?huggingface\.co(/|$|\?) ]]; then
+    # 認証トークンを選択
+    if [[ $1 =~ ^https://([a-zA-Z0-9_-]+\.)?huggingface\.co(/|$|\?) ]]; then
         auth_token="$HF_TOKEN"
-    elif 
-        [[ -n $CIVITAI_TOKEN && $1 =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|$|\?) ]]; then
+        if [[ -n $auth_token ]]; then
+            echo "Downloading with token..."
+            wget --header="Authorization: Bearer $auth_token" --content-disposition --show-progress -q -P "$2" "$1"
+        else
+            echo "Downloading without token..."
+            wget --content-disposition --show-progress -q -P "$2" "$1"
+        fi
+    elif [[ $1 =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|/api/download/models/|$|\?) ]]; then
         auth_token="$CIVITAI_TOKEN"
+        if [[ -n $auth_token ]]; then
+            echo "Downloading with token..."
+            wget "$1?token=$auth_token" --content-disposition --show-progress -q -P "$2"
+        else
+            echo "Downloading without token..."
+            wget "$1" --content-disposition --show-progress -q -P "$2"
+        fi
     fi
-    if [[ -n $auth_token ]];then
-        wget --header="Authorization: Bearer $auth_token" -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
-    else
-        wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
-    fi
+
 }
 
 provisioning_start
