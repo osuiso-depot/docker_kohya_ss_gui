@@ -10,10 +10,11 @@ DISK_GB_REQUIRED=24
 
 PIP_PACKAGES=(
     #"package==version"
+    "schedulefree==1.4"
   )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/anyillustriousXLFor_v11.safetensors"
+    "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
 )
 
 
