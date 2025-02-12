@@ -10,7 +10,7 @@ DISK_GB_REQUIRED=24
 
 PIP_PACKAGES=(
     #"package==version"
-    "schedulefree==1.4"
+    # "schedulefree==1.4"
   )
 
 CHECKPOINT_MODELS=(
