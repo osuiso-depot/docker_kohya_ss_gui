@@ -11,21 +11,40 @@ DISK_GB_REQUIRED=24
 PIP_PACKAGES=(
     #"package==version"
     # "schedulefree==1.4"
-  )
+    "git-lfs"
+)
 
 CHECKPOINT_MODELS=(
     "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
 )
 
+function dldataset(){
+    cd "${WORKSPACE}/kohya_ss/dataset"
 
-function myconfig(){
-    cd "${WORKSPACE}"
+    dir="${WORKSPACE}/kohya_ss/dataset"
 
-    mkdir -p "${WORKSPACE}/tmp"
-    if [ $? -ne 0 ]; then
-        echo "Failed to create tmp directory"
+    # Hugging Faceの認証情報をgitに設定
+    git config --global credential.helper store
+    echo "https://user:$HF_TOKEN@huggingface.co" > ~/.git-credentials
+
+    # === リポジトリのクローン ===
+    echo "Cloning repository from Hugging Face..."
+    if git lfs install; then
+        git clone https://huggingface.co/$DATASET_REPO "$dir"
+    else
+        echo "Error: git-lfs is not installed or failed to initialize."
     fi
 
+    # === 完了メッセージ ===
+    if [ $? -eq 0 ]; then
+        echo "Repository successfully downloaded to $dir"
+    else
+        echo "Error: Failed to download the repository."
+    fi
+}
+
+function myconfig(){
+    cd "${WORKSPACE}/kohya_ss"
 
     # ダウンロードするファイルのURL
     file_url="https://github.com/osuiso-depot/kohya_ss_gui_config/raw/main/kohya_config.json"
@@ -41,19 +60,9 @@ function myconfig(){
     # 結果を確認
     if [ $? -eq 0 ]; then
         echo "Download successful: $file_name"
-
-        # kohya_config.json を目的のディレクトリに移動
-        mv "kohya_config.json" "${WORKSPACE}/kohya_ss"
-        if [ $? -ne 0 ]; then
-            echo "Failed move kohya_config.json"
-        fi
-
     else
         echo "Download failed"
     fi
-
-    cd "${WORKSPACE}/kohya_ss"
-
 }
 
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
@@ -69,6 +78,7 @@ function provisioning_start() {
     provisioning_get_mamba_packages
     provisioning_get_pip_packages
     myconfig
+    dldataset
     provisioning_get_models \
         "${WORKSPACE}/kohya_ss/models" \
         "${CHECKPOINT_MODELS[@]}"
