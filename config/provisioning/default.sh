@@ -44,25 +44,23 @@ function dldataset(){
 }
 
 function myconfig(){
+    cd "${WORKSPACE}"
+
+    # リポジトリをクローン
+    git clone "https://${GITHUB_TOKEN}@github.com/osuiso-depot/kohya_ss_gui_config.git"
+    if [ $? -ne 0 ]; then
+        echo "Failed to clone repository"
+    fi
+
+    cd "kohya_ss_gui_config"
+
+    mv "kohya_config.json" "${WORKSPACE}/kohya_ss"
+    if [ $? -ne 0 ]; then
+        echo "Failed move kohya_config.json"
+    fi
+
     cd "${WORKSPACE}/kohya_ss"
 
-    # ダウンロードするファイルのURL
-    file_url="https://github.com/osuiso-depot/kohya_ss_gui_config/raw/main/kohya_config.json"
-    # パーソナルアクセストークン
-    token="${GITHUB_TOKEN}"
-
-    # ファイル名を取得
-    file_name=$(basename "$file_url")
-
-    # curlコマンドでダウンロード
-    curl -H "Authorization: token $token" -L "$file_url" -o "$file_name"
-
-    # 結果を確認
-    if [ $? -eq 0 ]; then
-        echo "Download successful: $file_name"
-    else
-        echo "Download failed"
-    fi
 }
 
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
