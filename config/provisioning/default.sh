@@ -18,6 +18,44 @@ CHECKPOINT_MODELS=(
 )
 
 
+function myconfig(){
+    cd "${WORKSPACE}"
+
+    mkdir -p "${WORKSPACE}/tmp"
+    if [ $? -ne 0 ]; then
+        echo "Failed to create tmp directory"
+    fi
+
+
+    # ダウンロードするファイルのURL
+    file_url="https://github.com/osuiso-depot/kohya_ss_gui_config/raw/main/kohya_config.json"
+    # パーソナルアクセストークン
+    token="${GITHUB_TOKEN}"
+
+    # ファイル名を取得
+    file_name=$(basename "$file_url")
+
+    # curlコマンドでダウンロード
+    curl -H "Authorization: token $token" -L "$file_url" -o "$file_name"
+
+    # 結果を確認
+    if [ $? -eq 0 ]; then
+        echo "Download successful: $file_name"
+
+        # kohya_config.json を目的のディレクトリに移動
+        mv "kohya_config.json" "${WORKSPACE}/kohya_ss"
+        if [ $? -ne 0 ]; then
+            echo "Failed move kohya_config.json"
+        fi
+
+    else
+        echo "Download failed"
+    fi
+
+    cd "${WORKSPACE}/kohya_ss"
+
+}
+
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
 
 function provisioning_start() {
@@ -30,6 +68,7 @@ function provisioning_start() {
     provisioning_print_header
     provisioning_get_mamba_packages
     provisioning_get_pip_packages
+    myconfig
     provisioning_get_models \
         "${WORKSPACE}/kohya_ss/models" \
         "${CHECKPOINT_MODELS[@]}"
