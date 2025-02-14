@@ -23,14 +23,20 @@ function dldataset(){
 
     dir="${WORKSPACE}/kohya_ss/dataset"
 
-    # Hugging Faceの認証情報をgitに設定
-    git config --global credential.helper store
-    echo "https://user:$HF_TOKEN@huggingface.co" > ~/.git-credentials
+    # Gitの認証情報をローカル設定に保存（グローバル設定を避ける）
+    GIT_CREDENTIALS_FILE="${HOME}/.git-credentials"
+    GIT_CONFIG_FILE="${HOME}/.gitconfig"
+
+    # 認証情報を保存
+    echo "https://user:$HF_TOKEN@huggingface.co" > "$GIT_CREDENTIALS_FILE"
+
+    # Gitの設定をローカルに適用
+    git config --file "$GIT_CONFIG_FILE" credential.helper "store --file=$GIT_CREDENTIALS_FILE"
 
     # === リポジトリのクローン ===
     echo "Cloning repository from Hugging Face..."
-    if git lfs install; then
-        git clone https://huggingface.co/$DATASET_REPO "$dir"
+    if git lfs install --local; then
+        git clone https://huggingface.co/$REPO_NAME "$dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
     fi
