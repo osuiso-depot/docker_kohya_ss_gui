@@ -36,7 +36,7 @@ function dldataset(){
     GIT_CONFIG_FILE="${HOME}/.gitconfig"
 
     # 認証情報を保存
-    echo "https://user:$HF_TOKEN@huggingface.co" > "$GIT_CREDENTIALS_FILE"
+    echo "https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co" > "$GIT_CREDENTIALS_FILE"
 
     # Gitの設定をローカルに適用
     git config --file "$GIT_CONFIG_FILE" credential.helper "store --file=$GIT_CREDENTIALS_FILE"
