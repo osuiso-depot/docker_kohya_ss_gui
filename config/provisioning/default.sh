@@ -44,7 +44,7 @@ function dldataset(){
     # === リポジトリのクローン ===
     echo "Cloning repository from Hugging Face..."
     if git lfs install --local; then
-        git clone https://huggingface.co/$REPO_NAME "$dir"
+        git clone https://huggingface.co/$DATASET_REPO "$dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
         return 1
