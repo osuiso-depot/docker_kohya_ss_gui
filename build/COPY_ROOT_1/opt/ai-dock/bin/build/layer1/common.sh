@@ -10,14 +10,14 @@ build_common_main() {
 build_common_install_kohya_ss() {
     # Get latest tag from GitHub if not provided
     if [[ -z $KOHYA_BUILD_REF ]]; then
-        export KOHYA_BUILD_REF="master"
+        export KOHYA_BUILD_REF="dev"
         env-store KOHYA_BUILD_REF
     fi
 
     cd /opt
     # すでに存在する場合は削除してからクローン
     [ -d kohya_ss ] && rm -rf kohya_ss
-    git clone --recursive https://github.com/bmaltais/kohya_ss
+    git clone --recursive https://github.com/osuiso-depot/kohya_ss_radam kohya_ss
     cd /opt/kohya_ss
 
     # 最新のコードに切り替え（タグではなくmainブランチを利用）

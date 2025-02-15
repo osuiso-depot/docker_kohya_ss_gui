@@ -21,7 +21,15 @@ CHECKPOINT_MODELS=(
 function dldataset(){
     cd "${WORKSPACE}/kohya_ss/dataset"
 
-    dir="${WORKSPACE}/kohya_ss/dataset"
+    dir="${WORKSPACE}/kohya_ss/dataset/train"
+
+    # === クローン先ディレクトリの確認 ===
+    if [ -d "$dir" ]; then
+        echo "The directory '$dir' already exists. Please remove or rename it before cloning."
+    fi
+
+    # フォルダが存在しない場合は作成
+    mkdir -p "$dir"
 
     # Gitの認証情報をローカル設定に保存（グローバル設定を避ける）
     GIT_CREDENTIALS_FILE="${HOME}/.git-credentials"
@@ -39,6 +47,7 @@ function dldataset(){
         git clone https://huggingface.co/$REPO_NAME "$dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
+        return 1
     fi
 
     # === 完了メッセージ ===
@@ -46,6 +55,7 @@ function dldataset(){
         echo "Repository successfully downloaded to $dir"
     else
         echo "Error: Failed to download the repository."
+        return 1
     fi
 }
 
