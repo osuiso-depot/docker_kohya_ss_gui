@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   #push:
   #  branches: [ "main" ]
-    
+
 env:
   UBUNTU_VERSION: 22.04
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
@@ -19,7 +19,7 @@ jobs:
           # Undeclared release tag finds latest from GitHub tags
           - {latest: "false", kohya: "v24.1.7", python: "3.10", pytorch: "2.5.1", cuda: "12.1.1-base"}
           - {latest: "false", kohya: "sd3-flux.1", python: "3.10", pytorch: "2.5.1", cuda: "12.1.1-base"}
-          
+
     steps:
       -
         name: Free Space
@@ -64,9 +64,9 @@ jobs:
         run: |
           img_path_ghcr="ghcr.io/${{ env.REPO_NAMESPACE }}/${{ env.REPO_NAME }}"
           img_path_dhub="${{ vars.DOCKERHUB_USER }}/${{ env.REPO_NAME }}-cuda"
-          
+
           if [[ -z '${{ matrix.build.kohya }}' ]]; then
-                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/bmaltais/kohya_ss/tags | jq -r '.[0].name')"
+                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/osuiso-depot/kohya_ss_radam/branches/dev | jq -r '.commit.sha')"
             else
                 KOHYA_BUILD_REF="${{ matrix.build.kohya }}"
             fi
@@ -151,7 +151,7 @@ jobs:
         run: |
           img_path_ghcr="ghcr.io/${{ env.REPO_NAMESPACE }}/${{ env.REPO_NAME }}"
           img_path_dhub="${{ vars.DOCKERHUB_USER }}/${{ env.REPO_NAME }}-rocm"
-          
+
           if [[ -z '${{ matrix.build.kohya }}' ]]; then
                 KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/bmaltais/kohya_ss/tags | jq -r '.[0].name')"
             else
