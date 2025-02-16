@@ -18,7 +18,7 @@ CHECKPOINT_MODELS=(
     "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
 )
 
-function dldataset(){
+function dldataset() {
     cd "${WORKSPACE}/kohya_ss/dataset"
 
     dir="${WORKSPACE}/kohya_ss/dataset/train"
@@ -26,25 +26,26 @@ function dldataset(){
     # === クローン先ディレクトリの確認 ===
     if [ -d "$dir" ]; then
         echo "The directory '$dir' already exists. Please remove or rename it before cloning."
+        return 1
     fi
 
     # フォルダが存在しない場合は作成
     mkdir -p "$dir"
 
-    # Gitの認証情報をローカル設定に保存（グローバル設定を避ける）
-    GIT_CREDENTIALS_FILE="${HOME}/.git-credentials"
-    GIT_CONFIG_FILE="${HOME}/.gitconfig"
+    # Gitの認証情報を直接環境変数に設定
+    export GIT_ASKPASS="$(mktemp)"
+    cat << EOF > $GIT_ASKPASS
+#!/bin/bash
+echo "${HF_TOKEN}"
+EOF
+    chmod +x $GIT_ASKPASS
 
-    # 認証情報を保存
-    echo "https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co" > "$GIT_CREDENTIALS_FILE"
-
-    # Gitの設定をローカルに適用
-    git config --file "$GIT_CONFIG_FILE" credential.helper "store --file=$GIT_CREDENTIALS_FILE"
+    export GIT_USERNAME="${HF_USERNAME}" # Hugging Faceのユーザー名を設定
 
     # === リポジトリのクローン ===
     echo "Cloning repository from Hugging Face..."
     if git lfs install --local; then
-        git clone https://huggingface.co/$DATASET_REPO "$dir"
+        GIT_ASKPASS=$GIT_ASKPASS git clone https://huggingface.co/$DATASET_REPO "$dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
         return 1
@@ -57,7 +58,11 @@ function dldataset(){
         echo "Error: Failed to download the repository."
         return 1
     fi
+
+    # クリーンアップ
+    rm -f $GIT_ASKPASS
 }
+
 
 function myconfig(){
     cd "${WORKSPACE}"
