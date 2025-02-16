@@ -6,3 +6,4 @@ config/rclone
 tpdocs
 .env
 build.log
+build_sd3.log
