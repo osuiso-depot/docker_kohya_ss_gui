@@ -10,7 +10,7 @@ build_common_main() {
 build_common_install_kohya_ss() {
     # Get latest tag from GitHub if not provided
     if [[ -z $KOHYA_BUILD_REF ]]; then
-        export KOHYA_BUILD_REF="sd3-flux.1-uv"
+        export KOHYA_BUILD_REF="sd3-flux.1"
         env-store KOHYA_BUILD_REF
     fi
 

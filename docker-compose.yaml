@@ -9,17 +9,17 @@ services:
         PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
         PYTORCH_VERSION: ${PYTORCH_VERSION:-2.4.0}
         KOHYA_BUILD_REF: ${KOHYA_BUILD_REF:-}
-        IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/python:${PYTHON_VERSION:-3.10}-v2-cuda-12.1.1-base-22.04}
+        IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/python:${PYTHON_VERSION:-3.10}-v2-cuda-12.1.1-base-22.04-sd3-flux.1}
       tags:
-        - "ghcr.io/ai-dock/kohya_ss:${IMAGE_TAG:-cuda-12.1.1-base-22.04}"
-        
-    image: ghcr.io/ai-dock/kohya_ss:${IMAGE_TAG:-cuda-12.1.1-base-22.04}
-    
+        - "ghcr.io/ai-dock/kohya_ss:${IMAGE_TAG:-cuda-12.1.1-base-22.04-sd3-flux.1}"
+
+    image: ghcr.io/ai-dock/kohya_ss:${IMAGE_TAG:-cuda-12.1.1-base-22.04-sd3-flux.1}
+
     devices:
       - "/dev/dri:/dev/dri"
       # For AMD GPU
       #- "/dev/kfd:/dev/kfd"
-    
+
     volumes:
       # Workspace
       - ./workspace:${WORKSPACE:-/workspace/}:rshared
@@ -29,7 +29,7 @@ services:
       # Avoids changing local file owner
       - ./config/authorized_keys:/root/.ssh/authorized_keys_mount
       - ./config/provisioning/default.sh:/opt/ai-dock/bin/provisioning.sh
-    
+
     ports:
         # SSH available on host machine port 2222 to avoid conflict. Change to suit
         - ${SSH_PORT_HOST:-2222}:${SSH_PORT_LOCAL:-22}
@@ -44,7 +44,7 @@ services:
         # Syncthing
         - ${SYNCTHING_UI_PORT_HOST:-8384}:${SYNCTHING_UI_PORT_HOST:-8384}
         - ${SYNCTHING_TRANSPORT_PORT_HOST:-22999}:${SYNCTHING_TRANSPORT_PORT_HOST:-22999}
-   
+
     environment:
         # Don't enclose values in quotes
         - DIRECT_ADDRESS=${DIRECT_ADDRESS:-127.0.0.1}

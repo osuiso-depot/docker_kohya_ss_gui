@@ -66,7 +66,7 @@ jobs:
           img_path_dhub="${{ vars.DOCKERHUB_USER }}/${{ env.REPO_NAME }}-cuda"
 
           if [[ -z '${{ matrix.build.kohya }}' ]]; then
-                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/bmaltais/kohya_ss/branches/sd3-flux.1-uv | jq -r '.commit.sha')"
+                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/bmaltais/kohya_ss/branches/sd3-flux.1 | jq -r '.commit.sha')"
             else
                 KOHYA_BUILD_REF="${{ matrix.build.kohya }}"
             fi

@@ -2,29 +2,13 @@
   "version": "2.0.0",
   "tasks": [
       {
-          "label": "Docker Build",
+          "label": "Docker Build with Logging",
           "type": "shell",
-          "command": "unlikable6/docker_kohya_ss_gui:latest ./build",
+          "command": "unlikable6/docker_kohya_ss_gui:sd3-flux-v1.0 ./build > build.log 2>&1",
           "problemMatcher": [],
           "group": {
               "kind": "build",
               "isDefault": true
-          },
-          "options": {
-              "env": {
-                  "LANG": "C.UTF-8",
-                  "LC_ALL": "C.UTF-8"
-              }
-          }
-      },
-      {
-          "label": "Docker Build with Logging",
-          "type": "shell",
-          "command": "unlikable6/docker_kohya_ss_gui:latest ./build > build.log 2>&1",
-          "problemMatcher": [],
-          "group": {
-              "kind": "build",
-              "isDefault": false
           },
           "options": {
               "env": {
