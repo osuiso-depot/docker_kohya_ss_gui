@@ -12,7 +12,7 @@ build_nvidia_install_torch() {
         torch==${PYTORCH_VERSION} \
         torchvision==0.19.0 \
         torchaudio \
-        xformers==0.4.0 \
+        xformers==0.0.27.post2 \
         --index-url=https://download.pytorch.org/whl/$short_cuda_version
 
 }

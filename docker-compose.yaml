@@ -7,7 +7,7 @@ services:
       context: ./build
       args:
         PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
-        PYTORCH_VERSION: ${PYTORCH_VERSION:-2.4.0}
+        PYTORCH_VERSION: ${PYTORCH_VERSION:-2.4.1}
         KOHYA_BUILD_REF: ${KOHYA_BUILD_REF:-}
         IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/python:${PYTHON_VERSION:-3.10}-v2-cuda-12.1.1-cudnn8-runtime-22.04}
       tags:
