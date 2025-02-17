@@ -17,7 +17,7 @@ build_common_install_kohya_ss() {
     cd /opt
     # すでに存在する場合は削除してからクローン
     [ -d kohya_ss ] && rm -rf kohya_ss
-    git clone --recursive https://github.com/bmaltais/kohya_ss kohya_ss
+    git clone --recursive https://github.com/osuiso-depot/kohya_ss_radam kohya_ss
     cd /opt/kohya_ss
 
     # 最新のコードに切り替え（タグではなくmainブランチを利用）

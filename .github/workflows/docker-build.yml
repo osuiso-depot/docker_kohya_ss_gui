@@ -17,8 +17,8 @@ jobs:
       matrix:
         build:
           # Undeclared release tag finds latest from GitHub tags
-          - {latest: "false", kohya: "v24.1.7", python: "3.10", pytorch: "2.5.1", cuda: "12.1.1-base"}
-          - {latest: "false", kohya: "sd3-flux.1", python: "3.10", pytorch: "2.5.1", cuda: "12.1.1-base"}
+          - {latest: "false", kohya: "v24.1.7", python: "3.10", pytorch: "2.4.0", cuda: "12.1.1-base"}
+          - {latest: "false", kohya: "sd3-flux.1", python: "3.10", pytorch: "2.4.0", cuda: "12.1.1-base"}
 
     steps:
       -
@@ -66,7 +66,7 @@ jobs:
           img_path_dhub="${{ vars.DOCKERHUB_USER }}/${{ env.REPO_NAME }}-cuda"
 
           if [[ -z '${{ matrix.build.kohya }}' ]]; then
-                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/bmaltais/kohya_ss/branches/sd3-flux.1 | jq -r '.commit.sha')"
+                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/osuiso-depot/kohya_ss_radam/branches/sd3-flux.1 | jq -r '.commit.sha')"
             else
                 KOHYA_BUILD_REF="${{ matrix.build.kohya }}"
             fi
@@ -105,8 +105,8 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - {latest: "false", kohya: "v24.1.7", python: "3.10", pytorch: "2.3.1", rocm: "6.0-core"}
-          - {latest: "false", kohya: "sd3-flux.1", python: "3.10", pytorch: "2.3.1", rocm: "6.0-core"}
+          - {latest: "false", kohya: "v24.1.7", python: "3.10", pytorch: "2.4.0", rocm: "6.0-core"}
+          - {latest: "false", kohya: "sd3-flux.1", python: "3.10", pytorch: "2.4.0", rocm: "6.0-core"}
     steps:
       -
         name: Free Space
@@ -153,7 +153,7 @@ jobs:
           img_path_dhub="${{ vars.DOCKERHUB_USER }}/${{ env.REPO_NAME }}-rocm"
 
           if [[ -z '${{ matrix.build.kohya }}' ]]; then
-                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/bmaltais/kohya_ss/tags | jq -r '.[0].name')"
+                KOHYA_BUILD_REF="$(curl -s https://api.github.com/repos/osuiso-depot/kohya_ss_radam/tags | jq -r '.[0].name')"
             else
                 KOHYA_BUILD_REF="${{ matrix.build.kohya }}"
             fi

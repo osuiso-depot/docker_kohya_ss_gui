@@ -10,11 +10,11 @@ build_nvidia_install_torch() {
     short_cuda_version="cu$(cut -d '.' -f 1,2 <<< "${CUDA_VERSION}" | tr -d '.')"
     "$KOHYA_VENV_PIP" install --no-cache-dir \
         torch==${PYTORCH_VERSION} \
-        torchvision \
+        torchvision=0.19.0 \
         torchaudio \
-        xformers \
+        xformers==0.4.0 \
         --index-url=https://download.pytorch.org/whl/$short_cuda_version
-    
+
 }
 
 build_nvidia_run_tests() {

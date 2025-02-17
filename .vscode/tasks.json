@@ -4,7 +4,7 @@
       {
           "label": "Docker Build with Logging",
           "type": "shell",
-          "command": "docker build -t unlikable6/docker_kohya_ss_gui:sd3-flux-cudnn-torch2.5.0-v1.4 ./build > build.log 2>&1",
+          "command": "docker build -t unlikable6/docker_kohya_ss_gui:sd3-flux-radam-cudnn-torch2.4.0-v1.4 ./build > build.log 2>&1",
           "problemMatcher": [],
           "group": {
               "kind": "build",
