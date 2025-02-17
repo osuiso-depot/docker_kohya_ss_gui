@@ -1,10 +1,20 @@
+# 変更
+* torch==2.4.0
+* kohya_ss sd3に対応
+* kohya_ssイメージを`cuda-12.1.1-base-22.04-sd3-flux.1`にした
+* sd-scriptを`sd3-flux.1`ブランチを使用するようにした
+* BaseImageを`v2-cuda-12.1.1-cudnn8-runtime-22.04`にした
+* バグ修正:`ValueError: torch.cuda.is_available() should be True but is False. xformers' memory efficient attention is only available for GPU`
+* provisioningスクリプトの修正。
+
+
 [![Docker Build](https://github.com/ai-dock/kohya_ss/actions/workflows/docker-build.yml/badge.svg)](https://github.com/ai-dock/kohya_ss/actions/workflows/docker-build.yml)
 
 # Kohya's GUI (kohya_ss) Docker Image
 
 Run [Kohya's GUI](https://github.com/bmaltais/kohya_ss) in a docker container locally or in the cloud.
 
->[!NOTE]  
+>[!NOTE]
 >These images do not bundle models or third-party configurations. You should use a [provisioning script](https://github.com/ai-dock/base-image/wiki/4.0-Running-the-Image#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
 
 ## Documentation
