@@ -15,8 +15,8 @@ PIP_PACKAGES=(
 )
 
 CHECKPOINT_MODELS=(
-    # "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/anyillustriousXLWith_10.safetensors"
-    "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
+    "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/anyillustriousXLWith_10.safetensors"
+    # "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
 )
 
 function dldataset() {
