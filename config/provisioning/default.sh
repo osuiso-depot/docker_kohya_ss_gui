@@ -15,8 +15,8 @@ PIP_PACKAGES=(
 )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/anyillustriousXLWith_10.safetensors"
-    # "https://huggingface.co/rimOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
+    "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/waiNSFWIllustrious_v140.safetensors"
+    # "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
 )
 
 function dldataset() {
@@ -48,6 +48,15 @@ EOF
     echo "Cloning repository from Hugging Face (branch: $BRANCH_NAME)..."
     if git lfs install --local; then
         GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$BRANCH_NAME" https://huggingface.co/$DATASET_REPO "$dir"
+    else
+        echo "Error: git-lfs is not installed or failed to initialize."
+        return 1
+    fi
+
+    # === リポジトリのクローン(正則化イメージ) ===
+    echo "Cloning repository from Hugging Face (branch: $BRANCH_NAME)..."
+    if git lfs install --local; then
+        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "main" https://huggingface.co/$DATASET_REPO_REG "$dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
         return 1
