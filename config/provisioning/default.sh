@@ -15,7 +15,7 @@ PIP_PACKAGES=(
 )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/waiNSFWIllustrious_v140.safetensors"
+    # "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/waiNSFWIllustrious_v140.safetensors"
     # "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
 )
 
@@ -42,21 +42,21 @@ EOF
     chmod +x $GIT_ASKPASS
 
     export GIT_USERNAME="${HF_USERNAME}" # Hugging Faceのユーザー名を設定
-    BRANCH_NAME="${BRANCH_NAME:-main}"
+    DATASET_REPO_BRANCH_NAME="${DATASET_REPO_BRANCH_NAME:-main}"
 
     # === リポジトリのクローン ===
-    echo "Cloning repository from Hugging Face (branch: $BRANCH_NAME)..."
+    echo "Cloning repository from Hugging Face (branch: $DATASET_REPO_BRANCH_NAME)..."
     if git lfs install --local; then
-        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$BRANCH_NAME" https://huggingface.co/$DATASET_REPO "$dir"
+        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$DATASET_REPO_BRANCH_NAME" https://huggingface.co/$DATASET_REPO "$dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
         return 1
     fi
 
     # === リポジトリのクローン(正則化イメージ) ===
-    echo "Cloning repository from Hugging Face (branch: $BRANCH_NAME)..."
+    echo "Cloning repository from Hugging Face (branch: $DATASET_REPO_REG_BRANCH_NAME)..."
     if git lfs install --local; then
-        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "main" https://huggingface.co/$DATASET_REPO_REG "$dir"
+        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$DATASET_REPO_REG_BRANCH_NAME" https://huggingface.co/$DATASET_REPO_REG "$dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
         return 1
