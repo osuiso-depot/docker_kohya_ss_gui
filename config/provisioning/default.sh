@@ -22,16 +22,17 @@ CHECKPOINT_MODELS=(
 function dldataset() {
     cd "${WORKSPACE}/kohya_ss/dataset"
 
-    dir="${WORKSPACE}/kohya_ss/dataset/train"
+    train_dir="${WORKSPACE}/kohya_ss/dataset/train"
+    reg_dir="${WORKSPACE}/kohya_ss/dataset/reg"  # ← 追加
 
     # === クローン先ディレクトリの確認 ===
-    if [ -d "$dir" ]; then
-        echo "The directory '$dir' already exists. Please remove or rename it before cloning."
-        return 1
-    fi
-
-    # フォルダが存在しない場合は作成
-    mkdir -p "$dir"
+    for dir in "$train_dir" "$reg_dir"; do
+        if [ -d "$dir" ]; then
+            echo "The directory '$dir' already exists. Please remove or rename it before cloning."
+            return 1
+        fi
+        mkdir -p "$dir"
+    done
 
     # Gitの認証情報を直接環境変数に設定
     export GIT_ASKPASS="$(mktemp)"
@@ -40,35 +41,32 @@ function dldataset() {
 echo "${HF_TOKEN}"
 EOF
     chmod +x $GIT_ASKPASS
-
     export GIT_USERNAME="${HF_USERNAME}" # Hugging Faceのユーザー名を設定
     DATASET_REPO_BRANCH_NAME="${DATASET_REPO_BRANCH_NAME:-main}"
+    DATASET_REPO_REG_BRANCH_NAME="${DATASET_REPO_REG_BRANCH_NAME:-main}"
 
-    # === リポジトリのクローン ===
+    # === 通常データセット ===
     echo "Cloning repository from Hugging Face (branch: $DATASET_REPO_BRANCH_NAME)..."
     if git lfs install --local; then
-        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$DATASET_REPO_BRANCH_NAME" https://huggingface.co/$DATASET_REPO "$dir"
+        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$DATASET_REPO_BRANCH_NAME" https://huggingface.co/$DATASET_REPO "$train_dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
         return 1
     fi
 
-    # === リポジトリのクローン(正則化イメージ) ===
+    # === 正則化データセット ===
     echo "Cloning repository from Hugging Face (branch: $DATASET_REPO_REG_BRANCH_NAME)..."
     if git lfs install --local; then
-        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$DATASET_REPO_REG_BRANCH_NAME" https://huggingface.co/$DATASET_REPO_REG "$dir"
+        GIT_ASKPASS=$GIT_ASKPASS git clone --branch "$DATASET_REPO_REG_BRANCH_NAME" "https://huggingface.co/$DATASET_REPO_REG" "$reg_dir"
     else
         echo "Error: git-lfs is not installed or failed to initialize."
         return 1
     fi
 
     # === 完了メッセージ ===
-    if [ $? -eq 0 ]; then
-        echo "Repository successfully downloaded to $dir"
-    else
-        echo "Error: Failed to download the repository."
-        return 1
-    fi
+    echo "Repositories successfully cloned:"
+    echo "  - Training: $train_dir"
+    echo "  - Regularization: $reg_dir"
 
     # クリーンアップ
     rm -f $GIT_ASKPASS
