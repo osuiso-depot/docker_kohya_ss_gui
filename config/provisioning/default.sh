@@ -15,8 +15,11 @@ PIP_PACKAGES=(
 )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/waiNSFWIllustrious_v140.safetensors"
+    # "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/waiNSFWIllustrious_v140.safetensors"
     # "https://huggingface.co/suiOPS/IllustriousBased/resolve/main/vxpILXL_v17.safetensors"
+    # "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/wxp_v2c.fp16.safetensors"
+    # "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/wxp.fp16.safetensors"
+    "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/waixp.safetensors"
 )
 
 function dldataset() {
