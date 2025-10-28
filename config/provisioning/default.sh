@@ -6,7 +6,7 @@
 
 ### Edit the following arrays to suit your workflow - values must be quoted and separated by newlines or spaces.
 
-DISK_GB_REQUIRED=24
+DISK_GB_REQUIRED=22
 
 PIP_PACKAGES=(
     #"package==version"
