@@ -17,12 +17,8 @@ build_common_install_kohya_ss() {
     cd /opt
     # すでに存在する場合は削除してからクローン
     [ -d kohya_ss ] && rm -rf kohya_ss
-    git clone --recursive https://github.com/osuiso-depot/kohya_ss_radam kohya_ss
+    git clone --recursive --depth 1 -b "$KOHYA_BUILD_REF" https://github.com/osuiso-depot/kohya_ss_radam kohya_ss
     cd /opt/kohya_ss
-
-    # 最新のコードに切り替え（タグではなくmainブランチを利用）
-    git checkout "$KOHYA_BUILD_REF"
-    git pull origin "$KOHYA_BUILD_REF"
 
     printf "\n%s\n" '#myTensorButton, #myTensorButtonStop {display:none!important;}' >> assets/style.css
     "$KOHYA_VENV_PIP" install --no-cache-dir \

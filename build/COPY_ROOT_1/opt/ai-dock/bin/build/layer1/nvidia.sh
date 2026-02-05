@@ -10,13 +10,7 @@ build_nvidia_install_kohya_ss() {
     build_common_install_kohya_ss
     "$KOHYA_VENV_PIP" install --no-cache-dir \
         bitsandbytes \
-        onnxruntime-gpu \
-        tensorrt==10.0.1 --extra-index-url https://pypi.nvidia.com
-    
-    ln -s "$KOHYA_VENV/lib/python${PYTHON_VERSION}/site-packages/tensorrt_libs/libnvinfer.so.10" \
-        "$KOHYA_VENV/lib/libnvinfer.so"
-    ln -s "$KOHYA_VENV/lib/python${PYTHON_VERSION}/site-packages/tensorrt_libs/libnvinfer_plugin.so.10" \
-        "$KOHYA_VENV/lib/libnvinfer_plugin.so"
+        onnxruntime-gpu
 }
 
 build_nvidia_run_tests() {
