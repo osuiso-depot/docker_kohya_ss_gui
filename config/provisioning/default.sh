@@ -20,7 +20,7 @@ CHECKPOINT_MODELS=(
     # "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/wxp_v2c.fp16.safetensors"
     # "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/wxp.fp16.safetensors"
     # "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/waixp.safetensors"
-    "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/illustriousXL10_v10_VAE.safetensors"
+    # "https://huggingface.co/suiOPS/IllustriousMerged/resolve/main/illustriousXL10_v10_VAE.safetensors"
 )
 function dldataset() {
     cd "${WORKSPACE}/kohya_ss/dataset"

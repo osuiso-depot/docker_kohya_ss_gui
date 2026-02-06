@@ -23,6 +23,7 @@ build_common_install_kohya_ss() {
     printf "\n%s\n" '#myTensorButton, #myTensorButtonStop {display:none!important;}' >> assets/style.css
     "$KOHYA_VENV_PIP" install --no-cache-dir \
         tensorboard \
+        pydantic==2.10.6 \
         -r requirements.txt
 }
 
