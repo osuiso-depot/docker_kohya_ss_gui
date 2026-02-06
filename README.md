@@ -3,6 +3,15 @@
 このリポジトリは、[Kohya's GUI (kohya_ss)](https://github.com/bmaltais/kohya_ss) を Docker 環境（ローカルまたは Vast.ai などのクラウド）で動作させるためのイメージを提供します。
 [AI-Dock](https://github.com/ai-dock) のベースイメージを基に、Vast.ai での利用に最適化し、ビルド速度とイメージサイズの改善を行っています。
 
+## 変更まとめ
+* `torch==2.4.0`
+* `kohya_ss sd3`に対応
+* `kohya_ss`イメージを`cuda-12.1.1-base-22.04-sd3-flux.1`にした
+* `sd-script`を`sd3-flux.1`ブランチを使用するようにした
+* BaseImageを`v2-cuda-12.1.1-cudnn8-runtime-22.04`にした
+* バグ修正:`ValueError: torch.cuda.is_available() should be True but is False. xformers' memory efficient attention is only available for GPU`
+* provisioningスクリプトの修正。
+
 ## 本格的なフォークによる改善点
 
 オリジナル（AI-Dock版）と比較して、以下の最適化を行っています：
