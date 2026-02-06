@@ -1,108 +1,76 @@
-# 変更
-* torch==2.4.0
-* kohya_ss sd3に対応
-* kohya_ssイメージを`cuda-12.1.1-base-22.04-sd3-flux.1`にした
-* sd-scriptを`sd3-flux.1`ブランチを使用するようにした
-* BaseImageを`v2-cuda-12.1.1-cudnn8-runtime-22.04`にした
-* バグ修正:`ValueError: torch.cuda.is_available() should be True but is False. xformers' memory efficient attention is only available for GPU`
-* provisioningスクリプトの修正。
+# Kohya's GUI (kohya_ss) Docker Image (Optimized for Vast.ai)
 
+このリポジトリは、[Kohya's GUI (kohya_ss)](https://github.com/bmaltais/kohya_ss) を Docker 環境（ローカルまたは Vast.ai などのクラウド）で動作させるためのイメージを提供します。
+[AI-Dock](https://github.com/ai-dock) のベースイメージを基に、Vast.ai での利用に最適化し、ビルド速度とイメージサイズの改善を行っています。
 
-[![Docker Build](https://github.com/ai-dock/kohya_ss/actions/workflows/docker-build.yml/badge.svg)](https://github.com/ai-dock/kohya_ss/actions/workflows/docker-build.yml)
+## 本格的なフォークによる改善点
 
-# Kohya's GUI (kohya_ss) Docker Image
+オリジナル（AI-Dock版）と比較して、以下の最適化を行っています：
 
-Run [Kohya's GUI](https://github.com/bmaltais/kohya_ss) in a docker container locally or in the cloud.
+1. **イメージサイズの削減**:
+   - 巨大な `tensorrt` パッケージを削除し、デプロイ時間を短縮。
+   - レイヤーごとのクリーンアップ（APT lists の削除など）を徹底。
+2. **ビルド速度の向上**:
+   - `git clone --depth 1` による浅いクローニングを採用。
+3. **安定性とバグ修正**:
+   - Gradio 5 系統で発生するランタイムエラーを修正（`pydantic` のバージョン固定、`--listen 0.0.0.0` の強制適用）。
+   - PyTorch 2.4.0 / CUDA 12.1 環境への最適化。
+4. **使いやすさの向上**:
+   - Docker Compose によるビルド・プッシュ・タグ管理の簡略化。
 
->[!NOTE]
->These images do not bundle models or third-party configurations. You should use a [provisioning script](https://github.com/ai-dock/base-image/wiki/4.0-Running-the-Image#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
+## クイックスタート
 
-## Documentation
+### 1. 起動方法（ローカル環境）
 
-All AI-Dock containers share a common base which is designed to make running on cloud services such as [vast.ai](https://link.ai-dock.org/vast.ai) as straightforward and user friendly as possible.
+```powershell
+docker compose up -d
+```
+起動後、ブラウザで `http://localhost:7860`（または設定したポート）にアクセスしてください。
 
-Common features and options are documented in the [base wiki](https://github.com/ai-dock/base-image/wiki) but any additional features unique to this image will be detailed below.
+### 2. Vast.ai での利用
+[provisioning.sh](config/provisioning/default.sh) を使用して、起動時に自動的にモデルや必要な拡張機能をインストールするように設定できます。
 
+## ビルドとプッシュの手順
 
-#### Version Tags
+開発者や独自のビルドが必要な場合は、以下の手順で行います。
 
-The `:latest` tag points to `:latest-cuda`
+### ローカルでのビルド
+```powershell
+# デフォルト（latest）タグでビルド
+docker compose build
 
-Tags follow these patterns:
+# 特定のタグを指定してビルド
+$env:IMAGE_TAG="v2.1.0"; docker compose build
+```
 
-##### _CUDA_
-- `:v2-cuda-[x.x.x]-base-[ubuntu-version]`
+### Docker Hub へのプッシュ
+```powershell
+# ログイン（初回のみ）
+docker login
 
-- `:latest-cuda` &rarr; `:v2-cuda-12.1.1-base-22.04`
+# プッシュ
+docker compose push
+```
 
-##### _ROCm_
-- `:v2-rocm-[x.x.x]-core-[ubuntu-version]`
+## 主な環境変数
 
-- `:latest-rocm` &rarr; `:v2-rocm-6.0-core-22.04`
+| 変数名            | 説明                             | デフォルト値 |
+| :---------------- | :------------------------------- | :----------- |
+| `IMAGE_TAG`       | ビルド・プッシュ時のイメージタグ | `latest`     |
+| `KOHYA_PORT_HOST` | ホスト側で公開するポート         | `7860`       |
+| `WEB_USER`        | 認証用ユーザー名                 | `user`       |
+| `WEB_PASSWORD`    | 認証用パスワード                 | `password`   |
+| `KOHYA_ARGS`      | kohya_ss 起動時の追加引数        | (なし)       |
 
+詳細な AI-Dock ベースの変数は [Base Image Wiki](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables) を参照してください。
 
-Browse [here](https://github.com/ai-dock/kohya_ss/pkgs/container/kohya_ss) for an image suitable for your target environment.
+## 構成
 
-Supported Python versions: `3.10`
-
-Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`
-
-## Additional Environment Variables
-
-| Variable                 | Description |
-| ------------------------ | ----------- |
-| `AUTO_UPDATE`            | Update Kohya_ss on startup (default `false`) |
-| `KOHYA_ARGS`             | Startup arguments |
-| `KOHYA_PORT_HOST`        | Kohya's GUI port (default `7860`) |
-| `KOHYA_REF`              | Git reference for auto update. Accepts branch, tag or commit hash. Default: latest release |
-| `KOHYA_URL`              | Override `$DIRECT_ADDRESS:port` with URL for Kohya's GUI |
-| `TENSORBOARD_ARGS`       | Startup arguments (default `--logdir /opt/kohya_ss/logs`) |
-| `TENSORBOARD_PORT_HOST`  | Tensorboard port (default `6006`) |
-| `TENSORBOARD_URL`        | Override `$DIRECT_ADDRESS:port` with URL for Tensorboard |
-
-See the base environment variables [here](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables) for more configuration options.
-
-### Additional Python Environments
-
-| Environment    | Packages |
-| -------------- | ----------------------------------------- |
-| `kohya`        | Kohya's GUI and dependencies |
-
-This virtualenv will be activated on shell login.
-
-~~See the base environments [here](https://github.com/ai-dock/base-image/wiki/1.0-Included-Software#installed-micromamba-environments).~~
-
-
-## Additional Services
-
-The following services will be launched alongside the [default services](https://github.com/ai-dock/base-image/wiki/1.0-Included-Software) provided by the base image.
-
-### Kohya's GUI
-
-The service will launch on port `7860` unless you have specified an override with `KOHYA_PORT`.
-
-You can set startup arguments by using variable `KOHYA_ARGS`.
-
-To manage this service you can use `supervisorctl [start|stop|restart] kohya_ss`.
-
-### Tensorboard
-
-The service will launch on port `6006` unless you have specified an override with `TENSORBOARD_PORT`.
-
-To manage this service you can use `supervisorctl [start|stop|restart] tensorboard`.
-
->[!NOTE]
->All services are password protected by default. See the [security](https://github.com/ai-dock/base-image/wiki#security) and [environment variables](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables) documentation for more information.
-
-
-## Pre-Configured Templates
-
-**Vast.​ai**
-
-- [Kohya's GUI:latest-cuda](https://link.ai-dock.org/template-vast-kohya_ss)
-
-- [Kohya's GUI:latest-rocm](https://link.ai-dock.org/template-vast-kohya_ss-rocm)
+- **OS**: Ubuntu 22.04
+- **Python**: 3.10
+- **PyTorch**: 2.4.0
+- **CUDA**: 12.1.1
+- **Venv**: `/opt/environments/python/kohya`
 
 ---
-
-_The author ([@robballantyne](https://github.com/robballantyne)) may be compensated if you sign up to services linked in this document. Testing multiple variants of GPU images in many different environments is both costly and time-consuming; This helps to offset costs_
+*本プロジェクトは AI-Dock プロジェクトをベースに、特定のワークフロー向けにカスタマイズされたものです。*
